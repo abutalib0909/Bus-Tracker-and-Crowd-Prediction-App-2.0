@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Driver Login | BusTrack</title>
+
+    <link rel="stylesheet" href="../css/auth.css">
+</head>
+
+<body>
+
+    <main class="auth-page">
+
+        <a href="../index.html" class="back-link">
+            ← Back to BusTrack
+        </a>
+
+        <section class="auth-layout">
+
+            <div class="auth-visual">
+
+                <div class="auth-brand">
+                    🚌 <strong>BusTrack</strong>
+                </div>
+
+                <div class="auth-visual-content">
+
+                    <span class="auth-label">
+                        DRIVER / CONDUCTOR ACCESS
+                    </span>
+
+                    <h1>
+                        Keep every<br>
+                        journey moving.
+                    </h1>
+
+                    <p>
+                        Manage your assigned bus, start trips,
+                        update passenger counts and share live
+                        location with passengers.
+                    </p>
+
+                    <div class="feature-list">
+
+                        <div>
+                            <span>✓</span>
+                            <p>Start and manage trips</p>
+                        </div>
+
+                        <div>
+                            <span>✓</span>
+                            <p>Share live bus location</p>
+                        </div>
+
+                        <div>
+                            <span>✓</span>
+                            <p>Update passenger count</p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="auth-form-area">
+
+                <div class="auth-card">
+
+                    <div class="auth-icon">
+                        🚌
+                    </div>
+
+                    <span class="form-label">
+                        DRIVER / CONDUCTOR
+                    </span>
+
+                    <h2>
+                        Welcome back
+                    </h2>
+
+                    <p class="auth-description">
+                        Sign in to access your assigned bus
+                        and trip controls.
+                    </p>
+
+                    <form id="driverLoginForm">
+
+                        <label for="email">
+                            Email or Phone
+                        </label>
+
+                        <input
+                            type="text"
+                            id="email"
+                            placeholder="Enter email or phone"
+                            required
+                        >
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Enter password"
+                            required
+                        >
+
+                        <div class="form-options">
+
+                            <label class="remember">
+                                <input type="checkbox">
+                                Remember me
+                            </label>
+
+                            <a href="#">
+                                Forgot password?
+                            </a>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="auth-button">
+
+                            Sign In
+                            <span>→</span>
+
+                        </button>
+
+                    </form>
+
+                    <div class="auth-divider">
+                        <span>OR</span>
+                    </div>
+
+                    <button
+                        class="secondary-button"
+                        onclick="demoDriverLogin()">
+
+                        Continue with Demo Account
+
+                    </button>
+
+                    <p class="register-text">
+                        New driver or conductor?
+                        <a href="register.html">
+                            Register here
+                        </a>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="../js/driver.js"></script>
+
+</body>
+
+</html>

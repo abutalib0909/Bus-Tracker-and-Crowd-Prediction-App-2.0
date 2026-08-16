@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Passenger Dashboard | BusTrack</title>
+
+    <link rel="stylesheet" href="../css/passenger.css">
+
+    <script src="../js/config.js"></script>
+    <script src="../data/routes.js"></script>
+</head>
+
+<body>
+
+    <header class="passenger-header">
+
+        <a href="../index.html" class="dashboard-logo">
+            <span>🚌</span>
+
+            <div>
+                <strong>BusTrack</strong>
+                <small>Passenger</small>
+            </div>
+        </a>
+
+        <div class="header-right">
+
+            <span class="live-indicator">
+                ● Live
+            </span>
+
+            <div class="profile">
+                <div class="profile-avatar">A</div>
+
+                <div>
+                    <strong>Passenger</strong>
+                    <small>Demo Account</small>
+                </div>
+            </div>
+
+            <button
+                class="logout-button"
+                onclick="logout()">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <main class="passenger-dashboard">
+
+        <aside class="sidebar">
+
+            <div class="welcome">
+
+                <span class="eyebrow">
+                    PASSENGER DASHBOARD
+                </span>
+
+                <h1>
+                    Where are you<br>
+                    going today?
+                </h1>
+
+                <p>
+                    Track your bus and plan your journey.
+                </p>
+
+            </div>
+
+
+            <section class="control-card">
+
+                <div class="card-heading">
+                    <span class="heading-icon">🚌</span>
+
+                    <div>
+                        <h2>Find a Bus</h2>
+                        <p>Select a route to begin tracking.</p>
+                    </div>
+                </div>
+
+                <label for="routeSelect">
+                    Bus Route
+                </label>
+
+                <select id="routeSelect">
+
+                    <option value="">
+                        Select a route
+                    </option>
+
+                    <option value="D-3">
+                        Route D-3
+                    </option>
+
+                    <option value="G-3">
+                        Route G-3
+                    </option>
+
+                    <option value="R-4">
+                        Route R-4
+                    </option>
+
+                </select>
+
+            </section>
+
+
+            <section class="live-card">
+
+                <div class="live-card-top">
+
+                    <span class="live-label">
+                        LIVE BUS
+                    </span>
+
+                    <span class="tracking-dot">
+                        ● TRACKING
+                    </span>
+
+                </div>
+
+                <div class="bus-route-name">
+                    <span>Route</span>
+                    <strong id="busRoute">-</strong>
+                </div>
+
+                <div class="route-progress">
+
+                    <div class="stop-line"></div>
+
+                    <div class="stop-item">
+                        <span class="stop-dot active"></span>
+
+                        <div>
+                            <small>Current</small>
+                            <strong id="currentStop">-</strong>
+                        </div>
+                    </div>
+
+                    <div class="stop-item">
+                        <span class="stop-dot"></span>
+
+                        <div>
+                            <small>Next</small>
+                            <strong id="nextStop">-</strong>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="eta-box">
+
+                    <div>
+                        <small>ARRIVING IN</small>
+
+                        <strong id="eta">-</strong>
+                    </div>
+
+                    <div class="eta-divider"></div>
+
+                    <div>
+                        <small>DISTANCE</small>
+
+                        <strong id="distance">-</strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <section class="crowd-card">
+
+                <div class="crowd-card-header">
+
+                    <div>
+                        <span class="eyebrow">CROWD</span>
+
+                        <h2>
+                            Current Crowd Level
+                        </h2>
+                    </div>
+
+                    <span
+                        id="crowdLevel"
+                        class="crowd-badge">
+                        -
+                    </span>
+
+                </div>
+
+                <div class="occupancy-wrapper">
+
+                    <div class="occupancy-bar">
+
+                        <div
+                            id="occupancyBar"
+                            class="occupancy-fill">
+                        </div>
+
+                    </div>
+
+                    <div class="occupancy-value">
+                        <strong id="occupancy">-</strong>
+                    </div>
+
+                </div>
+
+                <div class="crowd-bottom">
+
+                    <span>
+                        👥
+                        <strong id="passengers">-</strong>
+                        passengers
+                    </span>
+
+                    <span>
+                        Capacity:
+                        <strong id="capacity">-</strong>
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <section class="system-card">
+
+                <div>
+                    <span>System</span>
+
+                    <strong id="backendStatus">
+                        Checking...
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Maps</span>
+
+                    <strong id="mapStatus">
+                        Loading...
+                    </strong>
+                </div>
+
+            </section>
+
+        </aside>
+
+
+        <section class="map-area">
+
+            <div id="map"></div>
+
+            <div class="map-topbar">
+
+                <div class="map-title">
+
+                    <span class="map-live-dot"></span>
+
+                    <div>
+                        <strong>Live Bus Tracking</strong>
+                        <small>
+                            Location updates automatically
+                        </small>
+                    </div>
+
+                </div>
+
+                <button
+                    class="location-button"
+                    onclick="centerOnBus()">
+                    ◎ Center Bus
+                </button>
+
+            </div>
+
+            <div class="map-legend">
+
+                <div>
+                    <span class="legend-bus">●</span>
+                    Bus
+                </div>
+
+                <div>
+                    <span class="legend-stop">●</span>
+                    Stop
+                </div>
+
+                <div>
+                    <span class="legend-route"></span>
+                    Route
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="../js/passenger.js"></script>
+    <script src="../js/app.js"></script>
+
+</body>
+
+</html>

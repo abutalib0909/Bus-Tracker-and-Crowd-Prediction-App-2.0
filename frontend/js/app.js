@@ -1,13 +1,17 @@
 let map;
 let currentRoute = null;
-
+const SIMULATED_BUS_NUMBER = "DEMO-01";
 let routePolyline = null;
 let stopMarkers = [];
 let busMarker = null;
 let busTimer = null;
 let busSegment = 0;
 let busProgress = 0;
-
+const SIMULATED_BUS_SPEED_KMH = 30;
+const SIMULATION_SPEED_MULTIPLIER = 20;
+const SIMULATION_UPDATE_MS = 100;
+const BUS_CAPACITY = 50;
+let simulatedPassengers = 32;
 function startSimulatedBus() {
     if (!currentRoute || !map) {
         return;
@@ -34,90 +38,10 @@ function startSimulatedBus() {
 
     updateBusInfo();
 
-    busTimer = setInterval(moveBus, 100);
-}
-function updateBusInfo() {
-    if (!currentRoute) {
-        return;
-    }
-
-    const stops = currentRoute.stops;
-
-    const currentStop = stops[busSegment];
-    const nextStop = stops[busSegment + 1];
-
-    document.getElementById("busRoute").textContent =
-        currentRoute.name;
-
-    document.getElementById("currentStop").textContent =
-        currentStop.name;
-
-    if (nextStop) {
-        document.getElementById("nextStop").textContent =
-            nextStop.name;
-    } else {
-        document.getElementById("nextStop").textContent =
-            "Route ending";
-    }
-
-    // Temporary ETA calculation
-    const etaSeconds = Math.max(
-        1,
-        Math.ceil((1 - busProgress) * 10)
+    busTimer = setInterval(
+        moveBus,
+        SIMULATION_UPDATE_MS
     );
-
-    document.getElementById("eta").textContent =
-        `${etaSeconds} sec`;
-}
-function stopSimulatedBus() {
-    if (busTimer) {
-        clearInterval(busTimer);
-        busTimer = null;
-    }
-
-    if (busMarker) {
-        busMarker.setMap(null);
-        busMarker = null;
-    }
-}
-function moveBus() {
-    if (!currentRoute || !busMarker) {
-        return;
-    }
-
-    const stops = currentRoute.stops;
-
-    if (busSegment >= stops.length - 1) {
-        busSegment = 0;
-        busProgress = 0;
-    }
-
-    const start = stops[busSegment];
-    const end = stops[busSegment + 1];
-
-    busProgress += 0.01;
-
-    if (busProgress >= 1) {
-        busProgress = 0;
-        busSegment++;
-
-        if (busSegment >= stops.length - 1) {
-            busSegment = 0;
-        }
-    }
-
-    const lat =
-        start.lat + (end.lat - start.lat) * busProgress;
-
-    const lng =
-        start.lng + (end.lng - start.lng) * busProgress;
-
-    busMarker.setPosition({
-        lat: lat,
-        lng: lng
-    });
-
-    updateBusInfo();
 }
 function initMap() {
     const center = {
@@ -136,7 +60,252 @@ function initMap() {
 
     console.log("Google Maps initialized.");
 }
+function getCrowdLevel(occupancy) {
+    if (occupancy <= 40) {
+        return "LOW";
+    }
 
+    if (occupancy <= 70) {
+        return "MEDIUM";
+    }
+
+    if (occupancy <= 90) {
+        return "HIGH";
+    }
+
+    return "FULL";
+}
+async function saveCrowdRecord(stop) {
+    if (!currentRoute || !stop) {
+        return;
+    }
+
+    console.log(
+        `📡 Sending crowd data for ${stop.name}...`
+    );
+
+    try {
+        const response = await fetch(
+            "http://localhost:5000/api/crowd",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    routeId: currentRoute.id,
+                    busNumber: SIMULATED_BUS_NUMBER,
+                    stopId: stop.id,
+                    passengers: simulatedPassengers,
+                    capacity: BUS_CAPACITY
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        console.log("Crowd API response:", data);
+
+        if (!response.ok || !data.success) {
+            console.error("❌ Crowd record failed:", data);
+            return;
+        }
+
+        console.log(
+            `✅ Crowd saved: ${currentRoute.id} → ${stop.name}`
+        );
+
+    } catch (error) {
+        console.error("❌ Crowd request error:", error);
+    }
+}
+function updateBusInfo() {
+    if (!currentRoute || busSegment >= currentRoute.stops.length - 1) {
+        return;
+    }
+
+    const stops = currentRoute.stops;
+
+    const start = stops[busSegment];
+    const nextStop = stops[busSegment + 1];
+
+    document.getElementById("busRoute").textContent =
+        currentRoute.name;
+
+    document.getElementById("currentStop").textContent =
+        start.name;
+
+    document.getElementById("nextStop").textContent =
+        nextStop.name;
+
+    // Current simulated bus position
+    const currentLat =
+        start.lat +
+        (nextStop.lat - start.lat) * busProgress;
+
+    const currentLng =
+        start.lng +
+        (nextStop.lng - start.lng) * busProgress;
+
+    // Distance remaining to next stop
+    const remainingDistanceKm = calculateDistance(
+        currentLat,
+        currentLng,
+        nextStop.lat,
+        nextStop.lng
+    );
+
+    // ETA
+    const etaHours =
+        remainingDistanceKm / SIMULATED_BUS_SPEED_KMH;
+
+    const etaMinutes = etaHours * 60;
+
+    document.getElementById("busSpeed").textContent =
+        `${SIMULATED_BUS_SPEED_KMH} km/h`;
+
+    document.getElementById("distance").textContent =
+        `${remainingDistanceKm.toFixed(2)} km`;
+
+    document.getElementById("eta").textContent =
+        etaMinutes < 1
+            ? `${Math.max(1, Math.ceil(etaMinutes * 60))} sec`
+            : `${etaMinutes.toFixed(1)} min`;
+
+    const occupancy =
+        (simulatedPassengers / BUS_CAPACITY) * 100;
+
+    const crowdLevel = getCrowdLevel(occupancy);
+
+    document.getElementById("passengers").textContent =
+        simulatedPassengers;
+
+    document.getElementById("capacity").textContent =
+        BUS_CAPACITY;
+
+    document.getElementById("occupancy").textContent =
+        `${occupancy.toFixed(0)}%`;
+
+    document.getElementById("crowdLevel").textContent =
+        crowdLevel;
+}
+function stopSimulatedBus() {
+    if (busTimer) {
+        clearInterval(busTimer);
+        busTimer = null;
+    }
+
+    if (busMarker) {
+        busMarker.setMap(null);
+        busMarker = null;
+    }
+}
+function simulatePassengerChange() {
+    const change = Math.floor(Math.random() * 11) - 5;
+
+    simulatedPassengers += change;
+
+    if (simulatedPassengers < 0) {
+        simulatedPassengers = 0;
+    }
+
+    if (simulatedPassengers > BUS_CAPACITY) {
+        simulatedPassengers = BUS_CAPACITY;
+    }
+}
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const earthRadiusKm = 6371;
+
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRadians(lat1)) *
+        Math.cos(toRadians(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c =
+        2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return earthRadiusKm * c;
+}
+
+function toRadians(degrees) {
+    return degrees * Math.PI / 180;
+}
+function moveBus() {
+    if (!currentRoute || !busMarker) {
+        return;
+    }
+
+    const stops = currentRoute.stops;
+
+    const start = stops[busSegment];
+    const end = stops[busSegment + 1];
+
+    const distanceKm = calculateDistance(
+        start.lat,
+        start.lng,
+        end.lat,
+        end.lng
+    );
+
+    const speedKmPerMs =
+        SIMULATED_BUS_SPEED_KMH / 3600000;
+
+    const distancePerUpdate =
+        speedKmPerMs *
+        SIMULATION_UPDATE_MS *
+        SIMULATION_SPEED_MULTIPLIER;
+
+    if (distanceKm > 0) {
+        busProgress += distancePerUpdate / distanceKm;
+    }
+
+    if (busProgress >= 1) {
+        const arrivedStop = end;
+
+        busProgress = 0;
+
+        simulatePassengerChange();
+
+        console.log(
+            `🚌 Bus reached: ${arrivedStop.name}`
+        );
+
+        saveCrowdRecord(arrivedStop);
+
+        busSegment++;
+
+        if (busSegment >= stops.length - 1) {
+            busSegment = 0;
+
+            console.log(
+                "🔄 Route completed. Restarting..."
+            );
+        }
+    }
+
+    const currentStart = stops[busSegment];
+    const currentEnd = stops[busSegment + 1];
+
+    const lat =
+        currentStart.lat +
+        (currentEnd.lat - currentStart.lat) * busProgress;
+
+    const lng =
+        currentStart.lng +
+        (currentEnd.lng - currentStart.lng) * busProgress;
+
+    busMarker.setPosition({
+        lat,
+        lng
+    });
+
+    updateBusInfo();
+}
 async function checkBackend() {
     const backendStatus = document.getElementById("backendStatus");
 

@@ -1,71 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Bus Tracker & Crowd Prediction App 2.0</title>
+    <title>BusTrack | Smart Rural Transport</title>
 
     <link rel="stylesheet" href="css/style.css">
-
-    <script src="js/config.js"></script>
 </head>
 
 <body>
 
-    <header class="topbar">
-        <h1>🚌 Bus Tracker & Crowd Prediction App 2.0</h1>
-        <p>Live Bus Tracking • ETA • Crowd Prediction</p>
+    <header class="landing-header">
+
+        <a href="index.html" class="logo">
+            <span class="logo-icon">🚌</span>
+
+            <div>
+                <strong>BusTrack</strong>
+                <small>Smart Rural Transport</small>
+            </div>
+        </a>
+
+        <div class="header-badge">
+            ● LIVE PLATFORM
+        </div>
+
     </header>
 
-    <main class="dashboard">
 
-        <section class="control-panel">
+    <main class="landing-main">
 
-            <h2>🚌 Bus Tracker</h2>
+        <section class="hero-section">
 
-            <label for="routeSelect">Select Route</label>
+            <div class="hero-content">
 
-            <select id="routeSelect">
-                <option value="">Select a route</option>
-                <option value="D-3">Route D-3</option>
-                <option value="G-3">Route G-3</option>
-                <option value="R-4">Route R-4</option>
-            </select>
+                <span class="hero-label">
+                    SMART BUS TRACKING & CROWD INTELLIGENCE
+                </span>
 
-            <div class="status-card">
-                <p id="backendStatus">Checking backend...</p>
-                <p id="mapStatus">Loading map...</p>
+                <h1>
+                    Your bus.<br>
+                    <span>Your time.</span><br>
+                    Your journey.
+                </h1>
+
+                <p>
+                    Track buses in real time, check arrival times,
+                    discover routes, and understand crowd levels
+                    before you travel.
+                </p>
+
+                <div class="role-heading">
+                    <span>GET STARTED</span>
+                    <h2>Choose your role</h2>
+                </div>
+
+                <div class="role-grid">
+
+                    <a
+                        href="passenger/login.html"
+                        class="role-card passenger-card">
+
+                        <div class="role-top">
+
+                            <div class="role-icon">
+                                👤
+                            </div>
+
+                            <span class="role-arrow">
+                                →
+                            </span>
+
+                        </div>
+
+                        <h3>Passenger</h3>
+
+                        <p>
+                            Track your bus, view routes,
+                            check ETA and see crowd levels.
+                        </p>
+
+                        <span class="role-link">
+                            Continue as Passenger
+                        </span>
+
+                    </a>
+
+
+                    <a
+                        href="driver/login.html"
+                        class="role-card driver-card">
+
+                        <div class="role-top">
+
+                            <div class="role-icon">
+                                🚌
+                            </div>
+
+                            <span class="role-arrow">
+                                →
+                            </span>
+
+                        </div>
+
+                        <h3>Driver / Conductor</h3>
+
+                        <p>
+                            Manage your assigned bus,
+                            start trips and share location.
+                        </p>
+
+                        <span class="role-link">
+                            Continue as Driver
+                        </span>
+
+                    </a>
+
+                </div>
+
             </div>
-            <div class="bus-info" id="busInfo">
-                <h3>🚌 Bus Status</h3>
 
-                <p><strong>Route:</strong> <span id="busRoute">-</span></p>
 
-                <p><strong>Current Stop:</strong>
-                    <span id="currentStop">-</span>
-                </p>
+            <div class="hero-visual">
 
-                <p><strong>Next Stop:</strong>
-                    <span id="nextStop">-</span>
-                </p>
+                <div class="visual-glow"></div>
 
-                <p><strong>ETA:</strong>
-                    <span id="eta">-</span>
-                </p>
+                <div class="map-preview">
+
+                    <div class="map-line line-1"></div>
+                    <div class="map-line line-2"></div>
+                    <div class="map-line line-3"></div>
+
+                    <div class="map-stop stop-1">●</div>
+                    <div class="map-stop stop-2">●</div>
+                    <div class="map-stop stop-3">●</div>
+                    <div class="map-stop stop-4">●</div>
+
+                    <div class="bus-marker">
+                        🚌
+                    </div>
+
+                    <div class="map-card route-card">
+
+                        <span>LIVE ROUTE</span>
+
+                        <strong>R-4</strong>
+
+                        <small>
+                            Sangam → Naini
+                        </small>
+
+                    </div>
+
+                    <div class="map-card eta-card">
+
+                        <span>ARRIVING IN</span>
+
+                        <strong>4 min</strong>
+
+                        <small>
+                            Next stop: Sangam
+                        </small>
+
+                    </div>
+
+                    <div class="map-card crowd-card">
+
+                        <span>CROWD LEVEL</span>
+
+                        <strong>MEDIUM</strong>
+
+                        <small>
+                            64% occupied
+                        </small>
+
+                    </div>
+
+                </div>
+
             </div>
 
-        </section>
-
-        <section class="map-section">
-            <div id="map"></div>
         </section>
 
     </main>
 
-    <script src="js/config.js"></script>
-    <script src="data/routes.js"></script>
-    <script src="js/app.js"></script>
+
+    <footer class="landing-footer">
+
+        <span>
+            © 2026 BusTrack
+        </span>
+
+        <span>
+            Real-time transport • Smart mobility • Better journeys
+        </span>
+
+    </footer>
 
 </body>
+
 </html>

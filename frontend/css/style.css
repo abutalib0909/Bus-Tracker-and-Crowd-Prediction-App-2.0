@@ -4,113 +4,582 @@
     padding: 0;
 }
 
+:root {
+    --navy: #071a31;
+    --navy-2: #0b2748;
+    --blue: #1683ff;
+    --cyan: #46c7ff;
+    --green: #17b978;
+    --white: #ffffff;
+    --text: #172235;
+    --muted: #7890a8;
+    --border: rgba(255, 255, 255, 0.10);
+}
+
 body {
+    min-height: 100vh;
     font-family: Arial, sans-serif;
-    background: #f3f6fa;
-    color: #1f2937;
-}
-
-.topbar {
-    background: #0f2747;
+    background: var(--navy);
     color: white;
-    padding: 20px;
-    text-align: center;
 }
 
-.topbar h1 {
-    margin-bottom: 8px;
+
+/* ================= HEADER ================= */
+
+.landing-header {
+    height: 78px;
+    padding: 0 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 
-.topbar p {
-    opacity: 0.9;
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    text-decoration: none;
 }
 
-.dashboard {
+.logo-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
     display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 20px;
-    padding: 20px;
-    max-width: 1400px;
-    margin: auto;
+    place-items: center;
+    background: rgba(70,199,255,0.12);
+    border: 1px solid rgba(70,199,255,0.20);
+    font-size: 23px;
 }
 
-.control-panel {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-}
-
-.control-panel h2 {
-    margin-bottom: 20px;
-}
-
-.control-panel label {
+.logo strong {
     display: block;
-    margin-bottom: 8px;
+    font-size: 19px;
+}
+
+.logo small {
+    display: block;
+    margin-top: 2px;
+    color: #8ca3bc;
+    font-size: 10px;
+}
+
+.header-badge {
+    padding: 8px 13px;
+    border-radius: 999px;
+    background: rgba(23,185,120,0.10);
+    color: #4be09d;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+
+/* ================= MAIN ================= */
+
+.landing-main {
+    min-height: calc(100vh - 130px);
+}
+
+.hero-section {
+    width: min(1400px, 88%);
+    min-height: calc(100vh - 130px);
+    margin: auto;
+
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    align-items: center;
+    gap: 50px;
+}
+
+.hero-content {
+    padding: 60px 0;
+    position: relative;
+    z-index: 5;
+}
+
+.hero-label {
+    color: #6acbff;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1.8px;
+}
+
+.hero-content h1 {
+    margin-top: 18px;
+    font-size: clamp(46px, 5vw, 73px);
+    line-height: 0.98;
+    letter-spacing: -4px;
+}
+
+.hero-content h1 span {
+    color: var(--cyan);
+}
+
+.hero-content > p {
+    max-width: 540px;
+    margin-top: 24px;
+    color: #9db2c8;
+    font-size: 16px;
+    line-height: 1.75;
+}
+
+.role-heading {
+    margin-top: 38px;
+}
+
+.role-heading span {
+    color: #6687a5;
+    font-size: 9px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+}
+
+.role-heading h2 {
+    margin-top: 6px;
+    font-size: 21px;
+}
+
+
+/* ================= ROLES ================= */
+
+.role-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+    margin-top: 16px;
+}
+
+.role-card {
+    min-height: 215px;
+    padding: 20px;
+    border-radius: 18px;
+
+    text-decoration: none;
+    color: white;
+
+    background: rgba(255,255,255,0.055);
+    border: 1px solid rgba(255,255,255,0.09);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.role-card:hover {
+    transform: translateY(-4px);
+    background: rgba(255,255,255,0.08);
+}
+
+.passenger-card:hover {
+    border-color: rgba(22,131,255,0.7);
+}
+
+.driver-card:hover {
+    border-color: rgba(23,185,120,0.7);
+}
+
+.role-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.role-icon {
+    width: 51px;
+    height: 51px;
+    border-radius: 14px;
+
+    display: grid;
+    place-items: center;
+
+    font-size: 25px;
+}
+
+.passenger-card .role-icon {
+    background: rgba(22,131,255,0.14);
+}
+
+.driver-card .role-icon {
+    background: rgba(23,185,120,0.14);
+}
+
+.role-arrow {
+    font-size: 24px;
+    color: #6e8eac;
+}
+
+.role-card h3 {
+    margin-top: 22px;
+    font-size: 18px;
+}
+
+.role-card p {
+    margin-top: 8px;
+    color: #8ea3b8;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.role-link {
+    display: inline-block;
+    margin-top: 17px;
+    font-size: 11px;
     font-weight: bold;
 }
 
-select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
+.passenger-card .role-link {
+    color: #69bcff;
 }
 
-.status-card {
+.driver-card .role-link {
+    color: #55d69b;
+}
+
+.admin-login {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
     margin-top: 20px;
-    padding: 15px;
-    border-radius: 8px;
-    background: #f7f9fc;
+
+    color: #849ab0;
+    text-decoration: none;
+
+    font-size: 12px;
 }
 
-.status-card p {
-    margin-bottom: 10px;
+.admin-login:hover {
+    color: white;
 }
 
-.status-card p:last-child {
-    margin-bottom: 0;
+.admin-login span {
+    font-size: 17px;
 }
 
-.map-section {
+
+/* ================= VISUAL ================= */
+
+.hero-visual {
+    position: relative;
+    height: 650px;
+    display: grid;
+    place-items: center;
+}
+
+.visual-glow {
+    position: absolute;
+    width: 470px;
+    height: 470px;
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle,
+        rgba(22,131,255,0.23),
+        transparent 68%
+    );
+
+    filter: blur(10px);
+}
+
+.map-preview {
+    width: min(650px, 100%);
+    height: 500px;
+
+    position: relative;
+    overflow: hidden;
+
+    border-radius: 30px;
+
+    background:
+        linear-gradient(
+            rgba(10,35,62,0.65),
+            rgba(10,35,62,0.75)
+        ),
+        #123452;
+
+    border: 1px solid rgba(255,255,255,0.10);
+
+    box-shadow:
+        0 40px 100px rgba(0,0,0,0.32);
+}
+
+.map-preview::before {
+    content: "";
+    position: absolute;
+    inset: -30%;
+
+    opacity: 0.18;
+
+    background-image:
+        linear-gradient(
+            35deg,
+            transparent 47%,
+            white 48%,
+            transparent 49%
+        ),
+        linear-gradient(
+            135deg,
+            transparent 47%,
+            white 48%,
+            transparent 49%
+        );
+
+    background-size: 90px 90px;
+
+    transform: rotate(-12deg);
+}
+
+
+/* map route lines */
+
+.map-line {
+    position: absolute;
+    border: 4px dashed rgba(82,195,255,0.58);
+    border-radius: 50%;
+}
+
+.line-1 {
+    width: 440px;
+    height: 260px;
+    top: 115px;
+    left: 70px;
+    transform: rotate(-17deg);
+}
+
+.line-2 {
+    width: 300px;
+    height: 180px;
+    top: 220px;
+    left: 175px;
+    border-color: rgba(23,185,120,0.44);
+    transform: rotate(45deg);
+}
+
+.line-3 {
+    width: 470px;
+    height: 150px;
+    top: 45px;
+    left: 90px;
+    border-color: rgba(255,255,255,0.14);
+    transform: rotate(9deg);
+}
+
+
+/* stops */
+
+.map-stop {
+    position: absolute;
+    z-index: 3;
+
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+
+    color: #71d4ff;
+
+    box-shadow:
+        0 0 0 7px rgba(70,199,255,0.12);
+}
+
+.stop-1 {
+    top: 150px;
+    left: 115px;
+}
+
+.stop-2 {
+    top: 225px;
+    left: 420px;
+}
+
+.stop-3 {
+    top: 360px;
+    left: 265px;
+}
+
+.stop-4 {
+    top: 410px;
+    left: 515px;
+}
+
+
+/* bus marker */
+
+.bus-marker {
+    position: absolute;
+    z-index: 5;
+
+    top: 235px;
+    left: 290px;
+
+    width: 75px;
+    height: 75px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 21px;
+
     background: white;
-    padding: 10px;
-    border-radius: 12px;
-    min-height: 600px;
+    color: black;
+
+    font-size: 37px;
+
+    box-shadow:
+        0 18px 35px rgba(0,0,0,0.30);
+
+    animation: busFloat 2.5s ease-in-out infinite;
 }
 
-#map {
-    width: 100%;
-    height: 580px;
-    border-radius: 10px;
+@keyframes busFloat {
+
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-9px);
+    }
 }
 
-@media (max-width: 800px) {
-    .dashboard {
+
+/* information cards */
+
+.map-card {
+    position: absolute;
+    z-index: 4;
+
+    padding: 13px 16px;
+
+    border-radius: 13px;
+
+    background: rgba(7,26,49,0.83);
+    backdrop-filter: blur(12px);
+
+    border: 1px solid rgba(255,255,255,0.10);
+
+    box-shadow:
+        0 18px 35px rgba(0,0,0,0.16);
+}
+
+.map-card span {
+    display: block;
+
+    color: #7290ad;
+    font-size: 8px;
+    font-weight: bold;
+    letter-spacing: 1.2px;
+}
+
+.map-card strong {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 19px;
+}
+
+.map-card small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #9bb0c5;
+    font-size: 9px;
+}
+
+.route-card {
+    top: 38px;
+    right: 28px;
+}
+
+.eta-card {
+    left: 28px;
+    bottom: 30px;
+}
+
+.crowd-card {
+    right: 28px;
+    bottom: 33px;
+}
+
+.crowd-card strong {
+    color: #f6bb47;
+}
+
+
+/* ================= FOOTER ================= */
+
+.landing-footer {
+    width: 88%;
+    min-height: 52px;
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-top: 1px solid rgba(255,255,255,0.06);
+
+    color: #5e7690;
+    font-size: 10px;
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1050px) {
+
+    .hero-section {
+        grid-template-columns: 1fr;
+        padding-top: 30px;
+    }
+
+    .hero-visual {
+        height: 520px;
+    }
+
+    .hero-content {
+        padding-bottom: 10px;
+    }
+}
+
+@media (max-width: 650px) {
+
+    .landing-header {
+        padding: 0 20px;
+    }
+
+    .header-badge {
+        display: none;
+    }
+
+    .hero-section {
+        width: 92%;
+    }
+
+    .hero-content h1 {
+        font-size: 46px;
+        letter-spacing: -2.5px;
+    }
+
+    .role-grid {
         grid-template-columns: 1fr;
     }
 
-    #map {
-        height: 450px;
+    .hero-visual {
+        display: none;
     }
-}
-.bus-info {
-    margin-top: 20px;
-    padding: 15px;
-    background: #f7f9fc;
-    border-radius: 8px;
-}
 
-.bus-info h3 {
-    margin-bottom: 15px;
-}
-
-.bus-info p {
-    margin-bottom: 10px;
-}
-
-.bus-info p:last-child {
-    margin-bottom: 0;
+    .landing-footer {
+        width: 92%;
+        padding: 14px 0;
+        gap: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
