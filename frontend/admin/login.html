@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Login | BusTrack</title>
+
+    <link rel="stylesheet" href="../css/auth.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body class="admin-login-page">
+
+    <main class="admin-auth">
+
+        <div class="admin-auth-card">
+
+            <a href="../index.html" class="admin-back">
+                ← Back to public site
+            </a>
+
+            <div class="admin-logo">
+                🛡️
+            </div>
+
+            <span class="admin-label">
+                ADMINISTRATOR ACCESS
+            </span>
+
+            <h1>
+                Control Center
+            </h1>
+
+            <p class="admin-description">
+                Sign in to manage buses, routes, operators
+                and transport operations.
+            </p>
+
+            <form id="adminLoginForm">
+
+                <label for="adminEmail">
+                    Admin Email
+                </label>
+
+                <input
+                    type="email"
+                    id="adminEmail"
+                    placeholder="Enter administrator email"
+                    required
+                >
+
+                <label for="adminPassword">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="adminPassword"
+                    placeholder="Enter password"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="admin-login-button">
+
+                    Sign In
+                    <span>→</span>
+
+                </button>
+
+            </form>
+
+            <div class="admin-security-note">
+                <span>🔒</span>
+
+                <p>
+                    Restricted administrator area.
+                    Authorized personnel only.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="admin-side-panel">
+
+            <div class="admin-side-content">
+
+                <span class="admin-label">
+                    BUS TRACKER OPERATIONS
+                </span>
+
+                <h2>
+                    One control center<br>
+                    for the entire network.
+                </h2>
+
+                <p>
+                    Monitor live buses, manage routes,
+                    review operator registrations and
+                    oversee transport operations.
+                </p>
+
+                <div class="admin-features">
+
+                    <div>
+                        <span>01</span>
+                        <strong>Fleet Management</strong>
+                    </div>
+
+                    <div>
+                        <span>02</span>
+                        <strong>Route Management</strong>
+                    </div>
+
+                    <div>
+                        <span>03</span>
+                        <strong>Operator Verification</strong>
+                    </div>
+
+                    <div>
+                        <span>04</span>
+                        <strong>Live Operations</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <script type="module" src="../js/admin.js"></script>
+
+</body>
+
+</html>

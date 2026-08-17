@@ -1,18 +1,30 @@
 require("dotenv").config();
-const SIMULATED_BUS_NUMBER = "DEMO-01";
+
 const express = require("express");
 const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
+
 const connectDatabase = require("./database");
 const crowdRoutes = require("./routes/crowdRoutes");
 
 const app = express();
+
 const PORT = process.env.PORT || 5000;
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+    cors: {
+        origin: "*"
+    }
+});
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Crowd routes
+// Routes
 app.use("/api/crowd", crowdRoutes);
 
 // Health check
@@ -36,19 +48,73 @@ app.get("/api/db-status", (req, res) => {
 
     res.json({
         success: mongoose.connection.readyState === 1,
-        databaseState: states[mongoose.connection.readyState],
-        databaseName: mongoose.connection.name || null
+        databaseState:
+            states[mongoose.connection.readyState],
+        databaseName:
+            mongoose.connection.name || null
     });
 });
 
-// Connect database first, then start server
+
+// ============================================================
+// SOCKET.IO
+// ============================================================
+
+io.on("connection", (socket) => {
+
+    console.log(
+        `🔌 Client connected: ${socket.id}`
+    );
+
+    socket.on("driverLocation", (locationData) => {
+
+        console.log(
+            "📍 Driver location:",
+            locationData
+        );
+
+        // Send location to every connected passenger
+        io.emit(
+            "busLocation",
+            locationData
+        );
+    });
+
+    socket.on("disconnect", () => {
+
+        console.log(
+            `🔌 Client disconnected: ${socket.id}`
+        );
+    });
+});
+
+
+// ============================================================
+// START SERVER
+// ============================================================
+
 connectDatabase()
     .then(() => {
-        app.listen(PORT, () => {
-            console.log(`🚀 Server running at http://localhost:${PORT}`);
+
+        server.listen(PORT, () => {
+
+            console.log(
+                `🚀 Server running at http://localhost:${PORT}`
+            );
+
+            console.log(
+                "⚡ Socket.IO real-time tracking enabled."
+            );
         });
+
     })
     .catch((error) => {
-        console.error("❌ Server startup failed:");
-        console.error(error.message);
+
+        console.error(
+            "❌ Server startup failed:"
+        );
+
+        console.error(
+            error.message
+        );
     });

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | BusTrack</title>
+
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body class="admin-dashboard-page">
+
+    <header class="admin-header">
+
+        <a href="login.html" class="admin-dashboard-logo">
+            <span>🛡️</span>
+
+            <div>
+                <strong>BusTrack</strong>
+                <small>Administration</small>
+            </div>
+        </a>
+
+        <div class="admin-header-right">
+
+            <span class="admin-live">
+                ● System Online
+            </span>
+
+            <div class="admin-user">
+                <div class="admin-avatar">A</div>
+
+                <div>
+                    <strong>Administrator</strong>
+                    <small>Control Center</small>
+                </div>
+            </div>
+
+            <button
+                class="admin-logout"
+                onclick="logoutAdmin()">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <main class="admin-main">
+
+        <section class="admin-heading">
+
+            <div>
+                <span class="admin-section-label">
+                    CONTROL CENTER
+                </span>
+
+                <h1>
+                    Transport Overview
+                </h1>
+
+                <p>
+                    Monitor the fleet, operators and live operations.
+                </p>
+            </div>
+
+            <div class="admin-date">
+                <span>Today</span>
+                <strong id="adminDate">--</strong>
+            </div>
+
+        </section>
+
+
+        <!-- STATISTICS -->
+
+        <section class="admin-stat-grid">
+
+            <article class="admin-stat-card">
+
+                <div class="admin-stat-icon blue">
+                    🚌
+                </div>
+
+                <span>ACTIVE BUSES</span>
+
+                <strong>12</strong>
+
+                <small>
+                    ↑ 2 from yesterday
+                </small>
+
+            </article>
+
+
+            <article class="admin-stat-card">
+
+                <div class="admin-stat-icon green">
+                    🛣️
+                </div>
+
+                <span>ACTIVE ROUTES</span>
+
+                <strong>8</strong>
+
+                <small>
+                    All scheduled routes
+                </small>
+
+            </article>
+
+
+            <article class="admin-stat-card">
+
+                <div class="admin-stat-icon orange">
+                    👥
+                </div>
+
+                <span>PASSENGERS TODAY</span>
+
+                <strong>1,284</strong>
+
+                <small>
+                    Across active buses
+                </small>
+
+            </article>
+
+
+            <article class="admin-stat-card">
+
+                <div class="admin-stat-icon purple">
+                    ⏱️
+                </div>
+
+                <span>AVG. ETA</span>
+
+                <strong>11 min</strong>
+
+                <small>
+                    Current network average
+                </small>
+
+            </article>
+
+        </section>
+
+
+        <!-- MAIN GRID -->
+
+        <section class="admin-content-grid">
+
+
+            <!-- LIVE OPERATIONS -->
+
+            <article class="admin-panel large-panel">
+
+                <div class="admin-panel-heading">
+
+                    <div>
+                        <span class="admin-section-label">
+                            LIVE OPERATIONS
+                        </span>
+
+                        <h2>
+                            Active Buses
+                        </h2>
+                    </div>
+
+                    <span class="panel-status">
+                        ● Live
+                    </span>
+
+                </div>
+
+
+                <div class="bus-table">
+
+                    <div class="table-header">
+                        <span>BUS</span>
+                        <span>ROUTE</span>
+                        <span>DRIVER</span>
+                        <span>CROWD</span>
+                        <span>STATUS</span>
+                    </div>
+
+
+                    <div class="table-row">
+
+                        <span class="bus-name">
+                            🚌 DEMO-01
+                        </span>
+
+                        <span>
+                            R-4
+                        </span>
+
+                        <span>
+                            Demo Driver
+                        </span>
+
+                        <span class="table-crowd medium">
+                            MEDIUM
+                        </span>
+
+                        <span class="table-live">
+                            ● LIVE
+                        </span>
+
+                    </div>
+
+
+                    <div class="table-row">
+
+                        <span class="bus-name">
+                            🚌 DEMO-02
+                        </span>
+
+                        <span>
+                            D-3
+                        </span>
+
+                        <span>
+                            Operator 02
+                        </span>
+
+                        <span class="table-crowd low">
+                            LOW
+                        </span>
+
+                        <span class="table-live">
+                            ● LIVE
+                        </span>
+
+                    </div>
+
+
+                    <div class="table-row">
+
+                        <span class="bus-name">
+                            🚌 DEMO-03
+                        </span>
+
+                        <span>
+                            G-3
+                        </span>
+
+                        <span>
+                            Operator 03
+                        </span>
+
+                        <span class="table-crowd high">
+                            HIGH
+                        </span>
+
+                        <span class="table-live">
+                            ● LIVE
+                        </span>
+
+                    </div>
+
+
+                    <div class="table-row">
+
+                        <span class="bus-name">
+                            🚌 DEMO-04
+                        </span>
+
+                        <span>
+                            R-4
+                        </span>
+
+                        <span>
+                            Operator 04
+                        </span>
+
+                        <span class="table-crowd full">
+                            FULL
+                        </span>
+
+                        <span class="table-live">
+                            ● LIVE
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- QUICK ACTIONS -->
+
+            <article class="admin-panel">
+
+                <div class="admin-panel-heading">
+
+                    <div>
+                        <span class="admin-section-label">
+                            MANAGEMENT
+                        </span>
+
+                        <h2>
+                            Quick Actions
+                        </h2>
+                    </div>
+
+                </div>
+
+                <div class="quick-actions">
+
+                    <button>
+                        <span>🚌</span>
+                        <div>
+                            <strong>Manage Buses</strong>
+                            <small>12 registered buses</small>
+                        </div>
+                        <b>→</b>
+                    </button>
+
+                    <button>
+                        <span>🛣️</span>
+                        <div>
+                            <strong>Manage Routes</strong>
+                            <small>8 active routes</small>
+                        </div>
+                        <b>→</b>
+                    </button>
+
+                    <button>
+                        <span>👥</span>
+                        <div>
+                            <strong>Crowd Data</strong>
+                            <small>View live statistics</small>
+                        </div>
+                        <b>→</b>
+                    </button>
+
+                </div>
+
+            </article>
+
+
+            <!-- PENDING VERIFICATION -->
+
+            <article class="admin-panel">
+
+                <div class="admin-panel-heading">
+
+                    <div>
+                        <span class="admin-section-label">
+                            VERIFICATION
+                        </span>
+
+                        <h2>
+                            Pending Registrations
+                        </h2>
+                    </div>
+
+                    <span class="pending-count">
+                        3 Pending
+                    </span>
+
+                </div>
+
+
+                <div class="pending-list">
+
+                    <div class="pending-item">
+
+                        <div class="pending-avatar">
+                            RK
+                        </div>
+
+                        <div>
+                            <strong>
+                                Rajesh Kumar
+                            </strong>
+
+                            <small>
+                                Driver • Submitted 18 min ago
+                            </small>
+                        </div>
+
+                        <button>
+                            Review
+                        </button>
+
+                    </div>
+
+
+                    <div class="pending-item">
+
+                        <div class="pending-avatar">
+                            AS
+                        </div>
+
+                        <div>
+                            <strong>
+                                Amit Singh
+                            </strong>
+
+                            <small>
+                                Conductor • Submitted 42 min ago
+                            </small>
+                        </div>
+
+                        <button>
+                            Review
+                        </button>
+
+                    </div>
+
+
+                    <div class="pending-item">
+
+                        <div class="pending-avatar">
+                            PM
+                        </div>
+
+                        <div>
+                            <strong>
+                                Priya Mishra
+                            </strong>
+
+                            <small>
+                                Driver • Submitted 1 hr ago
+                            </small>
+                        </div>
+
+                        <button>
+                            Review
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- CROWD OVERVIEW -->
+
+            <article class="admin-panel">
+
+                <div class="admin-panel-heading">
+
+                    <div>
+                        <span class="admin-section-label">
+                            CROWD MONITORING
+                        </span>
+
+                        <h2>
+                            Network Crowd
+                        </h2>
+                    </div>
+
+                </div>
+
+                <div class="crowd-overview">
+
+                    <div class="crowd-meter">
+
+                        <div
+                            class="crowd-meter-fill"
+                            style="width: 64%">
+                        </div>
+
+                    </div>
+
+                    <div class="crowd-percent">
+                        64%
+                    </div>
+
+                </div>
+
+                <div class="crowd-breakdown">
+
+                    <div>
+                        <span class="dot low-dot"></span>
+                        <small>Low</small>
+                        <strong>4</strong>
+                    </div>
+
+                    <div>
+                        <span class="dot medium-dot"></span>
+                        <small>Medium</small>
+                        <strong>4</strong>
+                    </div>
+
+                    <div>
+                        <span class="dot high-dot"></span>
+                        <small>High</small>
+                        <strong>3</strong>
+                    </div>
+
+                    <div>
+                        <span class="dot full-dot"></span>
+                        <small>Full</small>
+                        <strong>1</strong>
+                    </div>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <footer class="admin-footer">
+            BusTrack Administration • Prototype Control Center
+        </footer>
+
+    </main>
+
+    <script type="module" src="../js/admin.js"></script>
+
+</body>
+
+</html>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Passenger Login | BusTrack</title>
+    <title>Create Passenger Account | BusTrack</title>
 
     <link rel="stylesheet" href="../css/auth.css">
 </head>
@@ -14,8 +14,8 @@
 
     <main class="auth-page">
 
-        <a href="../index.html" class="back-link">
-            ← Back to BusTrack
+        <a href="login.html" class="back-link">
+            ← Back to Login
         </a>
 
         <section class="auth-layout">
@@ -29,43 +29,40 @@
                 <div class="auth-visual-content">
 
                     <span class="auth-label">
-                        PASSENGER ACCESS
+                        PASSENGER REGISTRATION
                     </span>
 
                     <h1>
-                        Your journey<br>
-                        starts here.
+                        Start your<br>
+                        smarter journey.
                     </h1>
 
                     <p>
-                        Track your bus, check live arrival times,
-                        explore routes and know the crowd level
-                        before you travel.
+                        Create your BusTrack account and get
+                        access to live buses, routes, ETA and
+                        crowd information.
                     </p>
 
                     <div class="feature-list">
-
                         <div>
                             <span>✓</span>
-                            <p>Real-time bus tracking</p>
+                            <p>Track buses in real time</p>
                         </div>
 
                         <div>
                             <span>✓</span>
-                            <p>Live ETA information</p>
+                            <p>Check estimated arrival times</p>
                         </div>
 
                         <div>
                             <span>✓</span>
-                            <p>Crowd level awareness</p>
+                            <p>View current crowd levels</p>
                         </div>
-
                     </div>
 
                 </div>
 
             </div>
-
 
             <div class="auth-form-area">
 
@@ -76,28 +73,38 @@
                     </div>
 
                     <span class="form-label">
-                        PASSENGER
+                        CREATE ACCOUNT
                     </span>
 
                     <h2>
-                        Welcome back
+                        Join BusTrack
                     </h2>
 
                     <p class="auth-description">
-                        Sign in to continue to your
-                        passenger dashboard.
+                        Create your passenger account to continue.
                     </p>
 
-                    <form id="passengerLoginForm">
+                    <form id="passengerRegisterForm">
 
-                        <label for="email">
-                            Email or Phone
+                        <label for="name">
+                            Full Name
                         </label>
 
                         <input
                             type="text"
+                            id="name"
+                            placeholder="Enter your full name"
+                            required
+                        >
+
+                        <label for="email">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
                             id="email"
-                            placeholder="Enter email or phone"
+                            placeholder="Enter your email"
                             required
                         >
 
@@ -108,52 +115,38 @@
                         <input
                             type="password"
                             id="password"
-                            placeholder="Enter password"
+                            placeholder="Minimum 6 characters"
+                            minlength="6"
                             required
                         >
 
-                        <div class="form-options">
+                        <label for="confirmPassword">
+                            Confirm Password
+                        </label>
 
-                            <label class="remember">
-                                <input
-                                    type="checkbox"
-                                >
-                                Remember me
-                            </label>
-
-                            <a href="#">
-                                Forgot password?
-                            </a>
-
-                        </div>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            placeholder="Re-enter password"
+                            minlength="6"
+                            required
+                        >
 
                         <button
                             type="submit"
                             class="auth-button">
 
-                            Sign In
+                            Create Account
                             <span>→</span>
 
                         </button>
 
                     </form>
 
-                    <div class="auth-divider">
-                        <span>OR</span>
-                    </div>
-
-                    <button
-                        class="secondary-button"
-                        onclick="demoLogin()">
-
-                        Continue with Demo Account
-
-                    </button>
-
                     <p class="register-text">
-                        New to BusTrack?
-                        <a href="register.html">
-                            Create an account
+                        Already have an account?
+                        <a href="login.html">
+                            Sign in
                         </a>
                     </p>
 
@@ -165,7 +158,11 @@
 
     </main>
 
-    <script type="module" src="../js/passenger.js"></script>
+    <script
+        type="module"
+        src="../js/passenger.js">
+    </script>
+
 </body>
 
 </html>

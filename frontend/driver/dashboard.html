@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Driver Dashboard | BusTrack</title>
+
+    <link rel="stylesheet" href="../css/driver.css">
+</head>
+
+<body class="driver-dashboard-page">
+
+    <header class="driver-header">
+
+        <a href="../index.html" class="driver-logo">
+            <span>🚌</span>
+
+            <div>
+                <strong>BusTrack</strong>
+                <small>Driver / Conductor</small>
+            </div>
+        </a>
+
+        <div class="driver-header-right">
+
+            <div class="verification-status">
+                <span>●</span>
+                Verified Account
+            </div>
+
+            <div class="driver-profile">
+                <div class="driver-avatar">D</div>
+
+                <div>
+                    <strong>Demo Driver</strong>
+                    <small>Driver</small>
+                </div>
+            </div>
+
+            <button
+                class="driver-logout"
+                onclick="logoutDriver()">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <main class="driver-main">
+
+        <div class="driver-page-heading">
+
+            <div>
+                <span class="driver-eyebrow">
+                    DRIVER CONSOLE
+                </span>
+
+                <h1>
+                    Good morning, Driver 👋
+                </h1>
+
+                <p>
+                    Manage your assigned bus and today's trip.
+                </p>
+            </div>
+
+            <div
+                id="tripStatus"
+                class="trip-status waiting">
+
+                ● Trip Not Started
+
+            </div>
+
+        </div>
+
+
+        <section class="driver-grid">
+
+
+            <!-- ASSIGNED BUS -->
+
+            <article class="driver-card assigned-card">
+
+                <div class="driver-card-icon">
+                    🚌
+                </div>
+
+                <span class="card-label">
+                    ASSIGNED BUS
+                </span>
+
+                <h2 id="driverBusNumber">
+                    DEMO-01
+                </h2>
+
+                <div class="route-name">
+                    Route R-4
+                </div>
+
+                <div class="bus-details">
+
+                    <div>
+                        <span>Capacity</span>
+                        <strong>50</strong>
+                    </div>
+
+                    <div>
+                        <span>Status</span>
+                        <strong id="busStatus">
+                            Ready
+                        </strong>
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- ROUTE -->
+
+            <article class="driver-card route-card-driver">
+
+                <div class="driver-card-heading">
+
+                    <div>
+                        <span class="card-label">
+                            TODAY'S ROUTE
+                        </span>
+
+                        <h2>
+                            Route R-4
+                        </h2>
+                    </div>
+
+                    <span class="route-badge">
+                        4 Stops
+                    </span>
+
+                </div>
+
+                <div class="route-stops-driver">
+
+                    <div class="driver-stop">
+
+                        <span class="driver-stop-dot active"></span>
+
+                        <div>
+                            <small>STOP 01</small>
+                            <strong>Allahabad Fort</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="driver-stop">
+
+                        <span class="driver-stop-dot"></span>
+
+                        <div>
+                            <small>STOP 02</small>
+                            <strong>Daraganj</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="driver-stop">
+
+                        <span class="driver-stop-dot"></span>
+
+                        <div>
+                            <small>STOP 03</small>
+                            <strong>Sangam</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="driver-stop">
+
+                        <span class="driver-stop-dot"></span>
+
+                        <div>
+                            <small>STOP 04</small>
+                            <strong>Naini Bridge</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- TRIP CONTROL -->
+
+            <article class="driver-card trip-control-card">
+
+                <span class="card-label">
+                    TRIP CONTROL
+                </span>
+
+                <h2 id="tripHeading">
+                    Ready to start?
+                </h2>
+
+                <p id="tripDescription">
+                    Start the trip when your assigned bus
+                    is ready to depart.
+                </p>
+
+                <button
+                    id="tripButton"
+                    class="start-trip-button"
+                    onclick="toggleTrip()">
+
+                    ▶ Start Trip
+
+                </button>
+
+            </article>
+
+
+            <!-- GPS STATUS -->
+
+            <article class="driver-card gps-card">
+
+                <div class="driver-card-heading">
+
+                    <div>
+                        <span class="card-label">
+                            LOCATION
+                        </span>
+
+                        <h2>
+                            GPS Status
+                        </h2>
+                    </div>
+
+                    <span
+                        id="gpsIndicator"
+                        class="gps-indicator offline">
+
+                        ● Offline
+
+                    </span>
+
+                </div>
+
+                <div class="gps-info">
+
+                    <div>
+                        <span>Latitude</span>
+                        <strong id="gpsLat">--</strong>
+                    </div>
+
+                    <div>
+                        <span>Longitude</span>
+                        <strong id="gpsLng">--</strong>
+                    </div>
+
+                    <div>
+                        <span>Last Update</span>
+                        <strong id="gpsTime">--</strong>
+                    </div>
+
+                </div>
+
+                <button
+                    class="gps-button"
+                    onclick="toggleGPS()">
+
+                    Enable Location
+
+                </button>
+
+            </article>
+
+
+            <!-- PASSENGER COUNT -->
+
+            <article class="driver-card passenger-control-card">
+
+                <span class="card-label">
+                    PASSENGER COUNT
+                </span>
+
+                <h2>
+                    Current Passengers
+                </h2>
+
+                <div class="passenger-counter">
+
+                    <button
+                        onclick="changePassengerCount(-1)">
+                        −
+                    </button>
+
+                    <strong id="driverPassengerCount">
+                        32
+                    </strong>
+
+                    <button
+                        onclick="changePassengerCount(1)">
+                        +
+                    </button>
+
+                </div>
+
+                <div class="occupancy-info">
+
+                    <span>
+                        Capacity: 50
+                    </span>
+
+                    <strong id="driverOccupancy">
+                        64%
+                    </strong>
+
+                </div>
+
+                <div class="driver-occupancy-bar">
+
+                    <div
+                        id="driverOccupancyBar"
+                        style="width: 64%">
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- CROWD -->
+
+            <article class="driver-card crowd-status-driver">
+
+                <span class="card-label">
+                    CROWD STATUS
+                </span>
+
+                <div class="crowd-status-main">
+
+                    <div>
+
+                        <h2 id="driverCrowdLevel">
+                            MEDIUM
+                        </h2>
+
+                        <p>
+                            Current occupancy level
+                        </p>
+
+                    </div>
+
+                    <div class="crowd-status-icon">
+                        👥
+                    </div>
+
+                </div>
+
+                <div class="crowd-thresholds">
+
+                    <span class="low">LOW</span>
+                    <span class="medium">MEDIUM</span>
+                    <span class="high">HIGH</span>
+                    <span class="full">FULL</span>
+
+                </div>
+
+            </article>
+
+
+        </section>
+
+
+        <section class="driver-map-section">
+
+            <div class="driver-map-header">
+
+                <div>
+                    <span class="card-label">
+                        LIVE TRIP MAP
+                    </span>
+
+                    <h2>
+                        Bus Location
+                    </h2>
+                </div>
+
+                <span class="map-status">
+                    ● Waiting for trip
+                </span>
+
+            </div>
+
+            <div class="driver-map-placeholder">
+
+                <div class="map-placeholder-icon">
+                    🗺️
+                </div>
+
+                <h3>
+                    Live GPS Map
+                </h3>
+
+                <p>
+                    The production version will display the
+                    driver's live location and assigned route here.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+ 
+<script src="../js/socket.io.min.js"></script>
+
+<script type="module" src="../js/driver.js"></script>
+
+</body>
+
+</html>

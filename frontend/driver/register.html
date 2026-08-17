@@ -3,7 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Driver Registration | BusTrack</title>
 
@@ -17,11 +20,17 @@
 
         <header class="register-header">
 
-            <a href="../index.html" class="register-logo">
+            <a
+                href="../index.html"
+                class="register-logo"
+            >
                 🚌 <strong>BusTrack</strong>
             </a>
 
-            <a href="login.html" class="back-link-static">
+            <a
+                href="login.html"
+                class="back-link-static"
+            >
                 Already registered? Sign in →
             </a>
 
@@ -43,40 +52,64 @@
 
                 <p>
                     Create your professional profile and submit
-                    the required information for verification.
+                    your information for administrator verification.
                 </p>
 
                 <div class="verification-steps">
 
                     <div class="verification-step active">
                         <span>1</span>
+
                         <div>
-                            <strong>Personal details</strong>
-                            <small>Your basic information</small>
+                            <strong>
+                                Personal details
+                            </strong>
+
+                            <small>
+                                Your basic information
+                            </small>
                         </div>
                     </div>
 
                     <div class="verification-step">
                         <span>2</span>
+
                         <div>
-                            <strong>Professional details</strong>
-                            <small>Role and license information</small>
+                            <strong>
+                                Professional details
+                            </strong>
+
+                            <small>
+                                Role and license information
+                            </small>
                         </div>
                     </div>
 
                     <div class="verification-step">
                         <span>3</span>
+
                         <div>
-                            <strong>Bus assignment</strong>
-                            <small>Assigned vehicle information</small>
+                            <strong>
+                                Bus assignment
+                            </strong>
+
+                            <small>
+                                Vehicle and route information
+                            </small>
                         </div>
                     </div>
 
                     <div class="verification-step">
                         <span>4</span>
+
                         <div>
-                            <strong>Documents</strong>
-                            <small>Verification documents</small>
+                            <strong>
+                                Documents
+                            </strong>
+
+                            <small>
+                                Verification documents
+                            </small>
                         </div>
                     </div>
 
@@ -100,7 +133,10 @@
                             </span>
 
                             <div>
-                                <h2>Personal Details</h2>
+                                <h2>
+                                    Personal Details
+                                </h2>
+
                                 <p>
                                     Enter your basic information.
                                 </p>
@@ -158,12 +194,46 @@
 
                             </div>
 
+
+                            <div class="form-field">
+
+                                <label for="password">
+                                    Password
+                                </label>
+
+                                <input
+                                    type="password"
+                                    id="password"
+                                    placeholder="Create password"
+                                    minlength="6"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="form-field">
+
+                                <label for="confirmPassword">
+                                    Confirm Password
+                                </label>
+
+                                <input
+                                    type="password"
+                                    id="confirmPassword"
+                                    placeholder="Confirm password"
+                                    minlength="6"
+                                    required
+                                >
+
+                            </div>
+
                         </div>
 
                     </div>
 
 
-                    <!-- ROLE -->
+                    <!-- PROFESSIONAL DETAILS -->
 
                     <div class="form-section">
 
@@ -174,7 +244,10 @@
                             </span>
 
                             <div>
-                                <h2>Professional Details</h2>
+                                <h2>
+                                    Professional Details
+                                </h2>
+
                                 <p>
                                     Tell us about your role.
                                 </p>
@@ -202,7 +275,9 @@
 
                                     <span class="select-card-content">
 
-                                        <strong>🚌 Driver</strong>
+                                        <strong>
+                                            🚌 Driver
+                                        </strong>
 
                                         <small>
                                             Responsible for operating
@@ -224,7 +299,9 @@
 
                                     <span class="select-card-content">
 
-                                        <strong>🎫 Conductor</strong>
+                                        <strong>
+                                            🎫 Conductor
+                                        </strong>
 
                                         <small>
                                             Responsible for passenger
@@ -306,7 +383,10 @@
                             </span>
 
                             <div>
-                                <h2>Bus Details</h2>
+                                <h2>
+                                    Bus Details
+                                </h2>
+
                                 <p>
                                     Enter your assigned vehicle information.
                                 </p>
@@ -339,7 +419,10 @@
                                     Assigned Route
                                 </label>
 
-                                <select id="route">
+                                <select
+                                    id="route"
+                                    required
+                                >
 
                                     <option value="">
                                         Select route
@@ -389,7 +472,10 @@
                             </span>
 
                             <div>
-                                <h2>Verification Documents</h2>
+                                <h2>
+                                    Verification Documents
+                                </h2>
+
                                 <p>
                                     Upload the required documents.
                                 </p>
@@ -404,6 +490,7 @@
 
                                 <input
                                     type="file"
+                                    id="identityDocument"
                                     accept="image/*,.pdf"
                                 >
 
@@ -430,6 +517,7 @@
 
                                 <input
                                     type="file"
+                                    id="licenseDocument"
                                     accept="image/*,.pdf"
                                 >
 
@@ -456,7 +544,8 @@
 
                                 <input
                                     type="file"
-                                    accept="image/*,.pdf"
+                                    id="profilePhoto"
+                                    accept="image/*"
                                 >
 
                                 <span class="upload-icon">
@@ -468,7 +557,7 @@
                                 </strong>
 
                                 <small>
-                                    Clear photo of applicant
+                                    Clear applicant photo
                                 </small>
 
                                 <em>
@@ -478,6 +567,7 @@
                             </label>
 
                         </div>
+
 
                         <div class="privacy-note">
 
@@ -494,6 +584,8 @@
 
                     </div>
 
+
+                    <!-- SUBMIT -->
 
                     <div class="register-footer">
 
@@ -513,7 +605,8 @@
 
                         <button
                             type="submit"
-                            class="register-button">
+                            class="register-button"
+                        >
 
                             Submit Registration
                             <span>→</span>
@@ -530,7 +623,11 @@
 
     </main>
 
-    <script src="../js/driver.js"></script>
+
+    <script
+        type="module"
+        src="../js/driver.js"
+    ></script>
 
 </body>
 
