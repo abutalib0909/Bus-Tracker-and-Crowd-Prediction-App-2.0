@@ -26,6 +26,7 @@ const DRIVER_BUS_NUMBER = "DEMO-01";
 const DRIVER_ROUTE_ID = "R-4";
 const DRIVER_CAPACITY = 50;
 const DRIVER_DEFAULT_STOP_ID = "R4-03";
+const BACKEND_URL ="https://bus-tracker-and-crowd-prediction.onrender.com";
 
 
 // ============================================================
@@ -834,7 +835,7 @@ async function saveDriverCrowd() {
 
         const response =
             await fetch(
-                "https://bus-tracker-and-crowd-prediction.onrender.com",
+                `${BACKEND_URL}/api/crowd`,
                 {
                     method: "POST",
 
@@ -925,7 +926,16 @@ function connectDriverSocket() {
 
     socket =
         ioClient(
-            "https://bus-tracker-and-crowd-prediction.onrender.com"
+            BACKEND_URL,
+            {
+                transports: [
+                    "websocket",
+                    "polling"
+                ],
+                reconnection: true,
+                reconnectionAttempts: Infinity,
+                reconnectionDelay: 1000
+            }
         );
 
     socket.on(
@@ -933,18 +943,9 @@ function connectDriverSocket() {
         function () {
 
             console.log(
-                "✅ Driver connected to Socket.IO"
+                "✅ Driver connected to Render Socket.IO"
             );
-        }
-    );
 
-    socket.on(
-        "disconnect",
-        function () {
-
-            console.log(
-                "❌ Driver disconnected from Socket.IO"
-            );
         }
     );
 
@@ -953,13 +954,25 @@ function connectDriverSocket() {
         function (error) {
 
             console.error(
-                "❌ Socket.IO connection error:",
+                "❌ Driver Socket.IO connection error:",
                 error.message
             );
+
+        }
+    );
+
+    socket.on(
+        "disconnect",
+        function (reason) {
+
+            console.log(
+                "❌ Driver disconnected:",
+                reason
+            );
+
         }
     );
 }
-
 
 // ============================================================
 // GPS
@@ -1041,134 +1054,148 @@ function toggleGPS() {
 
     // Enable GPS
     gpsWatchId =
-        navigator.geolocation.watchPosition(
+    navigator.geolocation.watchPosition(
 
-            function (position) {
+        function (position) {
 
-                gpsActive = true;
+            gpsActive = true;
 
-                const latitude =
-                    position.coords.latitude;
+            const latitude =
+                position.coords.latitude;
 
-                const longitude =
-                    position.coords.longitude;
+            const longitude =
+                position.coords.longitude;
 
-                const indicator =
-                    document.getElementById(
-                        "gpsIndicator"
-                    );
-
-                const gpsLat =
-                    document.getElementById(
-                        "gpsLat"
-                    );
-
-                const gpsLng =
-                    document.getElementById(
-                        "gpsLng"
-                    );
-
-                const gpsTime =
-                    document.getElementById(
-                        "gpsTime"
-                    );
-
-                const button =
-                    document.querySelector(
-                        ".gps-button"
-                    );
-
-
-                if (indicator) {
-
-                    indicator.textContent =
-                        "● Online";
-
-                    indicator.className =
-                        "gps-indicator online";
-                }
-
-
-                if (gpsLat) {
-
-                    gpsLat.textContent =
-                        latitude.toFixed(5);
-                }
-
-
-                if (gpsLng) {
-
-                    gpsLng.textContent =
-                        longitude.toFixed(5);
-                }
-
-
-                if (gpsTime) {
-
-                    gpsTime.textContent =
-                        new Date()
-                            .toLocaleTimeString();
-                }
-
-
-                if (button) {
-
-                    button.textContent =
-                        "Disable Location";
-                }
-
-
-                // Send location
-                if (
-                    socket &&
-                    socket.connected
-                ) {
-
-                    socket.emit(
-                        "driverLocation",
-                        {
-                            busNumber:
-                                DRIVER_BUS_NUMBER,
-
-                            routeId:
-                                DRIVER_ROUTE_ID,
-
-                            latitude:
-                                latitude,
-
-                            longitude:
-                                longitude,
-
-                            active: true,
-
-                            timestamp:
-                                new Date()
-                                    .toISOString()
-                        }
-                    );
-                }
-            },
-
-
-            function (error) {
-
-                console.error(
-                    "GPS error:",
-                    error
+            const indicator =
+                document.getElementById(
+                    "gpsIndicator"
                 );
+
+            const gpsLat =
+                document.getElementById(
+                    "gpsLat"
+                );
+
+            const gpsLng =
+                document.getElementById(
+                    "gpsLng"
+                );
+
+            const gpsTime =
+                document.getElementById(
+                    "gpsTime"
+                );
+
+            const button =
+                document.querySelector(
+                    ".gps-button"
+                );
+
+            if (indicator) {
+                indicator.textContent =
+                    "● Online";
+
+                indicator.className =
+                    "gps-indicator online";
+            }
+
+            if (gpsLat) {
+                gpsLat.textContent =
+                    latitude.toFixed(5);
+            }
+
+            if (gpsLng) {
+                gpsLng.textContent =
+                    longitude.toFixed(5);
+            }
+
+            if (gpsTime) {
+                gpsTime.textContent =
+                    new Date().toLocaleTimeString();
+            }
+
+            if (button) {
+                button.textContent =
+                    "Disable Location";
+            }
+
+            // Send GPS to backend
+            if (
+                socket &&
+                socket.connected
+            ) {
+
+                socket.emit(
+                    "driverLocation",
+                    {
+                        busNumber:
+                            DRIVER_BUS_NUMBER,
+
+                        routeId:
+                            DRIVER_ROUTE_ID,
+
+                        latitude:
+                            latitude,
+
+                        longitude:
+                            longitude,
+
+                        active:
+                            true,
+
+                        timestamp:
+                            new Date().toISOString()
+                    }
+                );
+            }
+
+        },
+
+        function (error) {
+
+            console.warn(
+                "⚠️ GPS error:",
+                error.code,
+                error.message
+            );
+
+            // Don't stop GPS on a timeout.
+            // watchPosition() will keep trying.
+            if (error.code === 3) {
+
+                console.log(
+                    "🔄 GPS timed out. Waiting for another location update..."
+                );
+
+                return;
+            }
+
+            if (error.code === 1) {
 
                 alert(
-                    "Unable to access your location."
+                    "Location permission was denied. Please allow location access."
                 );
-            },
 
-
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 2000
+                return;
             }
-        );
+
+            if (error.code === 2) {
+
+                console.log(
+                    "📍 Position unavailable. Retrying..."
+                );
+
+                return;
+            }
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 60000,
+            maximumAge: 5000
+        }
+    );
 }
 
 
