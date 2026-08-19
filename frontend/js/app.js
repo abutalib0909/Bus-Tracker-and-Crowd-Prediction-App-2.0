@@ -1243,7 +1243,7 @@ async function loadLatestCrowdData() {
 
         const response =
             await fetch(
-                "https://bus-tracker-and-crowd-prediction.onrender.com"
+                "https://bus-tracker-and-crowd-prediction.onrender.com/api/health"
             );
 
         const result =
@@ -1307,7 +1307,7 @@ async function checkBackend() {
 
         const response =
             await fetch(
-                "https://bus-tracker-and-crowd-prediction.onrender.com"
+                "https://bus-tracker-and-crowd-prediction.onrender.com/api/health"
             );
 
         const data =
