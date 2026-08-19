@@ -1046,7 +1046,7 @@ function connectLiveBusTracking() {
     }
 
     passengerSocket =
-        window.io("http://localhost:5000");
+        window.io("https://bus-tracker-and-crowd-prediction.onrender.com");
 
     passengerSocket.on(
         "connect",
@@ -1243,7 +1243,7 @@ async function loadLatestCrowdData() {
 
         const response =
             await fetch(
-                "http://localhost:5000/api/crowd"
+                "https://bus-tracker-and-crowd-prediction.onrender.com"
             );
 
         const result =
@@ -1307,7 +1307,7 @@ async function checkBackend() {
 
         const response =
             await fetch(
-                "http://localhost:5000/api/health"
+                "https://bus-tracker-and-crowd-prediction.onrender.com"
             );
 
         const data =

@@ -834,7 +834,7 @@ async function saveDriverCrowd() {
 
         const response =
             await fetch(
-                "http://localhost:5000/api/crowd",
+                "https://bus-tracker-and-crowd-prediction.onrender.com",
                 {
                     method: "POST",
 
@@ -925,7 +925,7 @@ function connectDriverSocket() {
 
     socket =
         ioClient(
-            "http://localhost:5000"
+            "https://bus-tracker-and-crowd-prediction.onrender.com"
         );
 
     socket.on(
