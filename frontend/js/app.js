@@ -16,6 +16,11 @@ let busTimer = null;
 let busSegment = 0;
 let busProgress = 0;
 
+// Road-following simulation
+let roadSegment = 0;
+let roadProgress = 0;
+let roadPath = [];
+
 let liveGpsActive = false;
 
 let passengerSocket = null;
@@ -433,6 +438,10 @@ function clearRouteFromMap() {
 // SIMULATED BUS
 // ============================================================
 
+// ============================================================
+// START SIMULATED BUS
+// ============================================================
+
 function startSimulatedBus() {
 
     if (
@@ -445,25 +454,34 @@ function startSimulatedBus() {
 
     stopSimulatedBus();
 
-    busSegment = 0;
-    busProgress = 0;
+    // Reset road position
+    roadSegment = 0;
+    roadProgress = 0;
 
-    const firstStop =
-        currentRoute.stops[0];
+    const roadPath =
+        window.currentRoadPath || [];
 
-    if (!firstStop) {
+    if (roadPath.length < 2) {
+
+        console.error(
+            "❌ OSRM road path is not available."
+        );
+
         return;
     }
+
+    const firstPoint =
+        roadPath[0];
 
     busMarker =
         new google.maps.Marker({
 
             position: {
-                lat: firstStop.lat,
-                lng: firstStop.lng
+                lat: firstPoint.lat,
+                lng: firstPoint.lng
             },
 
-            map,
+            map: map,
 
             title:
                 `Bus on ${currentRoute.name}`,
@@ -488,10 +506,9 @@ function startSimulatedBus() {
         );
 
     console.log(
-        "🚌 Simulation started."
+        "🚌 Road-following bus simulation started."
     );
 }
-
 
 function stopSimulatedBus() {
 
@@ -515,116 +532,155 @@ function stopSimulatedBus() {
 // MOVE SIMULATED BUS
 // ============================================================
 
+// ============================================================
+// MOVE BUS ALONG ACTUAL ROAD
+// ============================================================
+
 function moveBus() {
 
     if (
-        !currentRoute ||
         !busMarker ||
         liveGpsActive
     ) {
         return;
     }
 
-    const stops =
-        currentRoute.stops;
+    const roadPath =
+        window.currentRoadPath || [];
+
+    if (roadPath.length < 2) {
+        return;
+    }
+
+    // Distance travelled in this update
+    const speedKmPerMs =
+        SIMULATED_BUS_SPEED_KMH /
+        3600000;
+
+    let remainingDistance =
+        speedKmPerMs *
+        SIMULATION_UPDATE_MS *
+        SIMULATION_SPEED_MULTIPLIER;
+
+
+    // Move across as many small road segments
+    // as necessary during this update
+    while (
+        remainingDistance > 0 &&
+        roadSegment < roadPath.length - 1
+    ) {
+
+        const start =
+            roadPath[roadSegment];
+
+        const end =
+            roadPath[roadSegment + 1];
+
+        const segmentDistance =
+            calculateDistance(
+                start.lat,
+                start.lng,
+                end.lat,
+                end.lng
+            );
+
+        // Ignore zero-length points
+        if (segmentDistance <= 0) {
+
+            roadSegment++;
+            roadProgress = 0;
+
+            continue;
+        }
+
+        const remainingSegmentDistance =
+            segmentDistance *
+            (1 - roadProgress);
+
+
+        // We can reach the next OSRM point
+        if (
+            remainingDistance >=
+            remainingSegmentDistance
+        ) {
+
+            remainingDistance -=
+                remainingSegmentDistance;
+
+            roadSegment++;
+            roadProgress = 0;
+
+        } else {
+
+            // We remain inside this segment
+            roadProgress +=
+                remainingDistance /
+                segmentDistance;
+
+            remainingDistance = 0;
+        }
+    }
+
+
+    // Route finished
+    if (
+        roadSegment >=
+        roadPath.length - 1
+    ) {
+
+        console.log(
+            "🔄 Road route completed. Restarting..."
+        );
+
+        roadSegment = 0;
+        roadProgress = 0;
+    }
+
 
     const start =
-        stops[busSegment];
+        roadPath[roadSegment];
 
     const end =
-        stops[busSegment + 1];
+        roadPath[roadSegment + 1];
 
     if (!start || !end) {
         return;
     }
 
-    const distanceKm =
-        calculateDistance(
-            start.lat,
-            start.lng,
-            end.lat,
-            end.lng
-        );
 
-    const speedKmPerMs =
-        SIMULATED_BUS_SPEED_KMH /
-        3600000;
-
-    const distancePerUpdate =
-        speedKmPerMs *
-        SIMULATION_UPDATE_MS *
-        SIMULATION_SPEED_MULTIPLIER;
-
-    if (distanceKm > 0) {
-
-        busProgress +=
-            distancePerUpdate /
-            distanceKm;
-    }
-
-    if (busProgress >= 1) {
-
-        busProgress = 0;
-
-        busSegment++;
-
-        if (
-            busSegment >=
-            stops.length - 1
-        ) {
-
-            busSegment = 0;
-
-            console.log(
-                "🔄 Route completed."
-            );
-        }
-    }
-
-    const currentStart =
-        stops[busSegment];
-
-    const currentEnd =
-        stops[busSegment + 1];
-
-    if (
-        !currentStart ||
-        !currentEnd
-    ) {
-        return;
-    }
-
+    // Exact position between two OSRM points
     const lat =
-        currentStart.lat +
+        start.lat +
         (
-            currentEnd.lat -
-            currentStart.lat
+            end.lat -
+            start.lat
         ) *
-        busProgress;
+        roadProgress;
 
     const lng =
-        currentStart.lng +
+        start.lng +
         (
-            currentEnd.lng -
-            currentStart.lng
+            end.lng -
+            start.lng
         ) *
-        busProgress;
+        roadProgress;
+
 
     busMarker.setPosition({
         lat,
         lng
     });
 
+
+    // Keep the old UI working
     updateBusInfo();
     updatePassengerCrowdUI();
 }
-
-
 // ============================================================
 // ROAD-FOLLOWING ROUTE
 // ============================================================
 
-function drawRoadRoute() {
+async function drawRoadRoute() {
 
     if (
         !map ||
@@ -634,135 +690,133 @@ function drawRoadRoute() {
         return;
     }
 
-    // Remove old route line
-    if (routePolyline) {
-
-        routePolyline.setMap(null);
-
-        routePolyline = null;
-    }
-
-    const directionsService =
-        new google.maps.DirectionsService();
-
-    const origin =
-        currentRoute.stops[0];
-
-    const destination =
-        currentRoute.stops[
-            currentRoute.stops.length - 1
-        ];
-
-    const waypoints =
+    const coordinates =
         currentRoute.stops
-            .slice(
-                1,
-                -1
-            )
             .map(
-                stop => ({
-                    location: {
-                        lat: stop.lat,
-                        lng: stop.lng
-                    },
-                    stopover: true
+                stop =>
+                    `${stop.lng},${stop.lat}`
+            )
+            .join(";");
+
+    const url =
+        `https://router.project-osrm.org/route/v1/driving/${coordinates}?overview=full&geometries=geojson&steps=true`;
+
+    try {
+
+        console.log(
+            "🛣️ Requesting OSRM road route..."
+        );
+
+        const response =
+            await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(
+                `OSRM HTTP ${response.status}`
+            );
+        }
+
+        const data =
+            await response.json();
+
+        if (
+            data.code !== "Ok" ||
+            !data.routes ||
+            !data.routes.length
+        ) {
+
+            throw new Error(
+                `OSRM error: ${data.code}`
+            );
+        }
+
+        const route =
+            data.routes[0];
+
+
+        // Remove old route
+        if (routePolyline) {
+
+            routePolyline.setMap(null);
+
+            routePolyline = null;
+        }
+
+
+        // OSRM returns:
+        // [longitude, latitude]
+
+        const roadPath =
+            route.geometry.coordinates.map(
+                coordinate => ({
+                    lat:
+                        coordinate[1],
+
+                    lng:
+                        coordinate[0]
                 })
             );
 
-    directionsService.route(
-        {
-            origin: {
-                lat: origin.lat,
-                lng: origin.lng
-            },
 
-            destination: {
-                lat: destination.lat,
-                lng: destination.lng
-            },
+        routePolyline =
+            new google.maps.Polyline({
 
-            waypoints,
+                path: roadPath,
 
-            optimizeWaypoints: false,
+                geodesic: false,
 
-            travelMode:
-                google.maps.TravelMode.DRIVING
-        },
+                strokeColor:
+                    currentRoute.color,
 
-        (result, status) => {
+                strokeOpacity:
+                    0.9,
 
-            if (
-                status !==
-                google.maps.DirectionsStatus.OK
-            ) {
+                strokeWeight:
+                    6,
 
-                console.error(
-                    "❌ Road routing failed:",
-                    status
-                );
-
-                // Fall back to straight route
-                drawFallbackRoute();
-
-                return;
-            }
-
-            const roadPath = [];
-
-            result.routes[0]
-                .legs
-                .forEach(
-                    leg => {
-
-                        leg.steps.forEach(
-                            step => {
-
-                                step.path.forEach(
-                                    point => {
-
-                                        roadPath.push(
-                                            {
-                                                lat:
-                                                    point.lat(),
-
-                                                lng:
-                                                    point.lng()
-                                            }
-                                        );
-                                    }
-                                );
-                            }
-                        );
-                    }
-                );
+                map
+            });
 
 
-            routePolyline =
-                new google.maps.Polyline({
+        console.log(
+            "✅ OSRM ROAD ROUTE CREATED"
+        );
 
-                    path: roadPath,
+        console.log(
+            `🛣️ Distance: ${
+                (route.distance / 1000)
+                    .toFixed(2)
+            } km`
+        );
 
-                    geodesic: false,
+        console.log(
+            `⏱️ Duration: ${
+                Math.round(
+                    route.duration / 60
+                )
+            } min`
+        );
 
-                    strokeColor:
-                        currentRoute.color,
 
-                    strokeOpacity:
-                        0.9,
+        // Save road geometry
+        // for later live-bus movement
+        window.currentRoadPath =
+            roadPath;
 
-                    strokeWeight:
-                        6,
+        window.currentRoadRoute =
+            route;
 
-                    map
-                });
 
-            console.log(
-                "✅ Road-following route created."
-            );
-        }
-    );
+    } catch (error) {
+
+        console.error(
+            "❌ OSRM routing failed:",
+            error
+        );
+
+        drawFallbackRoute();
+    }
 }
-
 
 function drawFallbackRoute() {
 
@@ -797,7 +851,11 @@ function drawFallbackRoute() {
 // DISPLAY ROUTE
 // ============================================================
 
-function displayRoute(routeId) {
+// ============================================================
+// DISPLAY ROUTE
+// ============================================================
+
+async function displayRoute(routeId) {
 
     if (
         !map ||
@@ -815,12 +873,15 @@ function displayRoute(routeId) {
     busSegment = 0;
     busProgress = 0;
 
+    roadSegment = 0;
+    roadProgress = 0;
+
+    window.currentRoadPath = [];
+
+
     // Stop markers
     currentRoute.stops.forEach(
-        (
-            stop,
-            index
-        ) => {
+        (stop, index) => {
 
             const marker =
                 new google.maps.Marker({
@@ -830,10 +891,9 @@ function displayRoute(routeId) {
                         lng: stop.lng
                     },
 
-                    map,
+                    map: map,
 
-                    title:
-                        stop.name,
+                    title: stop.name,
 
                     label: {
                         text:
@@ -845,11 +905,12 @@ function displayRoute(routeId) {
                     zIndex: 100
                 });
 
+
             const infoWindow =
                 new google.maps.InfoWindow({
 
                     content: `
-                        <div>
+                        <div style="padding:5px">
                             <strong>
                                 ${stop.name}
                             </strong>
@@ -861,23 +922,25 @@ function displayRoute(routeId) {
                     `
                 });
 
+
             marker.addListener(
                 "click",
                 () => {
 
                     infoWindow.open({
                         anchor: marker,
-                        map
+                        map: map
                     });
                 }
             );
+
 
             stopMarkers.push(marker);
         }
     );
 
 
-    // Fit map to stops
+    // Fit map
     const bounds =
         new google.maps.LatLngBounds();
 
@@ -894,26 +957,28 @@ function displayRoute(routeId) {
     map.fitBounds(bounds);
 
 
-    // Draw actual roads
-    drawRoadRoute();
+    // IMPORTANT:
+    // Wait for OSRM before starting bus
+    await drawRoadRoute();
 
 
-    // Start simulator only if
-    // real GPS has not taken over
-    if (!liveGpsActive) {
+    if (
+        !liveGpsActive &&
+        window.currentRoadPath &&
+        window.currentRoadPath.length >= 2
+    ) {
 
         startSimulatedBus();
     }
+
 
     updateBusInfo();
     updatePassengerCrowdUI();
 
     console.log(
-        `Displayed ${currentRoute.name}`
+        `✅ Displayed ${currentRoute.name}`
     );
 }
-
-
 // ============================================================
 // ROUTE SELECTOR
 // ============================================================
@@ -937,9 +1002,6 @@ function setupRouteSelector() {
                 return;
             }
 
-            // New route means we can
-            // return to simulation until
-            // a fresh GPS packet arrives.
             liveGpsActive = false;
 
             if (liveBusMarker) {
@@ -949,7 +1011,12 @@ function setupRouteSelector() {
                 liveBusMarker = null;
             }
 
-            displayRoute(
+            roadSegment = 0;
+            roadProgress = 0;
+
+            window.currentRoadPath = [];
+
+            await displayRoute(
                 this.value
             );
 
@@ -969,10 +1036,7 @@ function connectLiveBusTracking() {
         return;
     }
 
-    if (
-        typeof window.io !==
-        "function"
-    ) {
+    if (typeof window.io !== "function") {
 
         console.error(
             "❌ Socket.IO client not loaded."
@@ -982,13 +1046,11 @@ function connectLiveBusTracking() {
     }
 
     passengerSocket =
-        window.io(
-            "http://localhost:5000"
-        );
+        window.io("http://localhost:5000");
 
     passengerSocket.on(
         "connect",
-        () => {
+        function () {
 
             console.log(
                 "✅ Passenger GPS connected."
@@ -998,7 +1060,7 @@ function connectLiveBusTracking() {
 
     passengerSocket.on(
         "connect_error",
-        error => {
+        function (error) {
 
             console.error(
                 "❌ GPS connection error:",
@@ -1009,7 +1071,7 @@ function connectLiveBusTracking() {
 
     passengerSocket.on(
         "disconnect",
-        () => {
+        function () {
 
             console.log(
                 "❌ Passenger GPS disconnected."
@@ -1019,19 +1081,16 @@ function connectLiveBusTracking() {
 
     passengerSocket.on(
         "busLocation",
-        data => {
+        function (data) {
 
             console.log(
-                "📍 GPS received:",
+                "📍 GPS RECEIVED:",
                 data
             );
 
-            window.pendingGpsLocation =
-                data;
+            window.pendingGpsLocation = data;
 
-            updateLiveGpsMarker(
-                data
-            );
+            updateLiveGpsMarker(data);
         }
     );
 }
@@ -1063,60 +1122,53 @@ function updateLiveGpsMarker(data) {
     }
 
 
-    // Map not ready yet
+    // Map may not be ready yet
     if (!map) {
 
-        window.pendingGpsLocation =
-            data;
-
-        return;
-    }
-
-
-    // If a route is selected, ensure
-    // this is the correct route.
-    if (
-        currentRoute &&
-        data.routeId &&
-        data.routeId !==
-            currentRoute.id
-    ) {
-
         console.log(
-            "Ignoring GPS from another route:",
-            data.routeId
+            "⏳ GPS received before map was ready."
         );
 
+        window.pendingGpsLocation = data;
+
         return;
     }
 
+
+    const position = {
+        lat: lat,
+        lng: lng
+    };
+
+
+    // ========================================================
+    // REAL GPS TAKES CONTROL
+    // ========================================================
 
     liveGpsActive = true;
 
 
-    // Stop simulator
+    // Stop simulated bus
     stopSimulatedBus();
 
 
-    const position = {
-        lat,
-        lng
-    };
-
+    // ========================================================
+    // CREATE LIVE MARKER
+    // ========================================================
 
     if (!liveBusMarker) {
 
         liveBusMarker =
             new google.maps.Marker({
 
-                position,
+                position: position,
 
-                map,
+                map: map,
 
                 title:
                     `Live Bus ${
                         data.busNumber ||
-                        SIMULATED_BUS_NUMBER
+                        "Bus"
                     }`,
 
                 icon: {
@@ -1124,20 +1176,39 @@ function updateLiveGpsMarker(data) {
                         "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
                 },
 
-                zIndex: 2000
+                zIndex: 9999
             });
 
         console.log(
-            "🚌 LIVE GPS MARKER CREATED."
+            "🚌 LIVE GPS MARKER CREATED"
         );
 
     } else {
 
+        // Move existing marker
         liveBusMarker.setPosition(
             position
         );
     }
 
+
+    // ========================================================
+    // CENTER MAP ON FIRST LIVE LOCATION
+    // ========================================================
+
+    map.panTo(position);
+
+
+    // Don't zoom repeatedly
+    if (map.getZoom() < 15) {
+
+        map.setZoom(15);
+    }
+
+
+    // ========================================================
+    // UPDATE STATUS
+    // ========================================================
 
     const mapStatus =
         document.getElementById(
@@ -1150,13 +1221,13 @@ function updateLiveGpsMarker(data) {
             "🟢 Live GPS tracking active";
     }
 
+
     console.log(
-        "📍 Live bus:",
+        "📍 LIVE BUS POSITION:",
         lat,
         lng
     );
 }
-
 
 // ============================================================
 // CROWD API

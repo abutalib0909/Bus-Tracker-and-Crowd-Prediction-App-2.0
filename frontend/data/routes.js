@@ -98,35 +98,23 @@ const routes = {
         ]
     },
 
-    "LAPROCY-UNITED": {
-        id: "LAPROCY-UNITED",
-        name: "Laprocy → United",
+    "LEPROSY-UNITED": {
+        id: "LEPROSY-UNITED",
+        name: "Leprosy Naini Chauraha → United",
         color: "#1683ff",
 
         stops: [
             {
                 id: "LU-01",
-                name: "Laprocy Chauraha",
-                lat: 25.3940,
-                lng: 81.8540
+                name: "Leprosy Naini Chauraha",
+                lat: 25.4124,
+                lng: 81.8596
             },
             {
                 id: "LU-02",
-                name: "Naini",
-                lat: 25.39267,
-                lng: 81.85908
-            },
-            {
-                id: "LU-03",
-                name: "UPSIDC Industrial Area",
-                lat: 25.3810,
-                lng: 81.8585
-            },
-            {
-                id: "LU-04",
                 name: "United Institute of Technology",
-                lat: 25.3711,
-                lng: 81.8587
+                lat: 25.3436,
+                lng: 81.9008
             }
         ]
     }
