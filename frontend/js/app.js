@@ -24,7 +24,7 @@ let roadPath = [];
 let liveGpsActive = false;
 
 let passengerSocket = null;
-
+const BACKEND_URL ="https://bus-tracker-and-crowd-prediction.onrender.com";
 
 // ============================================================
 // CONFIG
@@ -830,20 +830,22 @@ function drawFallbackRoute() {
 
     routePolyline =
         new google.maps.Polyline({
-
             path,
-
             geodesic: true,
-
             strokeColor:
                 currentRoute.color,
-
             strokeOpacity: 0.9,
-
             strokeWeight: 6,
-
             map
         });
+
+    // Important: allow the simulator
+    // to continue even if OSRM fails.
+    window.currentRoadPath = path;
+
+    console.warn(
+        "⚠️ Using fallback straight-line route."
+    );
 }
 
 
@@ -1046,8 +1048,7 @@ function connectLiveBusTracking() {
     }
 
     passengerSocket =
-        window.io("https://bus-tracker-and-crowd-prediction.onrender.com");
-
+        window.io(BACKEND_URL);
     passengerSocket.on(
         "connect",
         function () {
@@ -1242,9 +1243,7 @@ async function loadLatestCrowdData() {
     try {
 
         const response =
-            await fetch(
-                "https://bus-tracker-and-crowd-prediction.onrender.com/api/health"
-            );
+            await fetch(`${BACKEND_URL}/api/crowd`);
 
         const result =
             await response.json();
@@ -1306,9 +1305,7 @@ async function checkBackend() {
     try {
 
         const response =
-            await fetch(
-                "https://bus-tracker-and-crowd-prediction.onrender.com/api/health"
-            );
+            await fetch(`${BACKEND_URL}/api/health`);
 
         const data =
             await response.json();
