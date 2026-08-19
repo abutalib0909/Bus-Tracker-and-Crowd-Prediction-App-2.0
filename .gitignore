@@ -30,3 +30,6 @@ Thumbs.db
 # Editor files
 .vscode/
 .idea/
+
+# Firebase local cache
+.firebase/
